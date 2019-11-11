@@ -1,0 +1,267 @@
+---
+title: "Kansei Engineering"
+author: "Yaumil Sitta"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme: yeti
+    highlight: espresso
+    df_print: paged
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    fig_caption: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.align = "center",
+                      warning = F,
+                      message = F)
+```
+
+```{r echo = FALSE}
+library(tidyverse)
+library(readxl)
+library(tm)
+library(RColorBrewer)
+library(wordcloud)
+```
+
+## Objectives
+
+The primary objective of this article is to introduce Kansei Engineering in general. In particular, the purposes is to give a brief explanation about Kansei Engineering research in Algoritma. Hence, this research is focused on achieving the following objectives:   
+1	to generate a product/service design using Quantification Theory Type 1   
+2	to improve kansei research in Algoritma   
+
+
+## What is Kansei Engineering?
+
+(Japanese: 感性工学 kansei kougaku, emotional / affective engineering) aims at the development or improvement of products and services by translating the customer's psychological feelings and needs into the domain of product design (i.e. parameters). 
+
+>**Kansei** is a Japanese word that expresses the feelings gathered through sight, hearing, smell, and taste. 
+
+<center>
+![](gambar/kansei.jpg){ width=50% }
+</center>
+
+The idea of Kansei engineering was conceived in 1970. Since then, Mitsuo Nagamachi, the founder, has worked to establish the methodology of Kansei engineering, and has assisted in developing no less than 50 new products.
+
+The R&D team grasps the **customer’s feeling**, namely the `Kansei`; analyzes the Kansei data using psychological, ergonomic, medical, or engineering methods; and designs the new product based on the analyzed information. Kansei/affective engineering is a technological and engineering process from Kansei data into design specifications.
+
+## Success story of Kansei Engineering
+
+Here is the sample of product design based on Kansei Engineering technique
+
+<center>
+![](gambar/sharp.PNG)
+</center>
+
+## Kansei Words
+
+>The collection of adjectives/noun that describe the product or service domain and the potential Kansei needs (i.e., profound needs of the market) called **Kansei words** (e.g., elegant, masculine, sober, attractive, urbanlike, sexy, heavy). 
+
+The Kansei words are collected from various sources such as the team of experts, designers, experienced users, advertisements, magazines, ideas, direct observation, and interviews.
+
+## Kansei Engineering Scheme
++ A Kansei engineer should think, Who are the customers?
++ What do they want and need?; that is, what is their Kansei?
++ The Kansei engineer should consider how to evaluate the customers’ Kansei.
++ The engineer should analyze the Kansei data using statistical analysis or psychophysiological measurement
++ Transfer the analyzed data to the design domain.
+
+## Types of Kansei Engineering
+<center>
+![](gambar/KE Principal.png){ width=60% }
+</center>
+
+### Kansei Engineering Type II
+
+Translation Process in Kansei Engineering Type II
+
+<center>
+![](gambar/kansei-type-2.PNG)
+</center>
+
+## Kansei Engineering Research in Algoritma
+This part is one of Yaumil Sitta and Jasmeen OKRs to make a pleasurable learning for students in academy 
+
+### Sample of Algoritma teaching format
+
+```{r echo = F}
+desain_algo <- read_csv("desain_element_algo.csv")
+sample <- read_excel("algomengajar.xlsx")
+
+```
+
+```{r}
+desain_algo %>% 
+  select(-1)
+```
+
+### Kansei Words Collected
+
+The Kansei words was collected by interviewing 28 students in Iris academy. We got 51 kansei words that belong to algoritma teaching format. Below is the summary of the Kansei Words:
+
+```{r echo = FALSE}
+data <- read_excel("KW.xlsx")
+```
+
+```{r echo = FALSE}
+kw.tdm <- data %>% 
+  VectorSource() %>% 
+  VCorpus() %>% 
+  tm_map(removePunctuation) %>% 
+  TermDocumentMatrix()
+```
+
+```{r}
+kw_matrix <- as.matrix(kw.tdm)
+kw_urut <- sort(rowSums(kw_matrix), 
+                decreasing = TRUE)
+kw_df <- data.frame(word = names(kw_urut), 
+                    freq = kw_urut)
+head(kw_df, 10)
+```
+
+```{r}
+set.seed(1234)
+wordcloud(words = kw_df$word, 
+          freq = kw_df$freq, 
+          min.freq = 1, 
+          max.words = 100, 
+          random.order = FALSE, 
+    rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
+```
+
+>From summary about the data above, the frequently Kansei Words used by students are Slow, Knowledgeable, and Practical.
+
+The kansei words will then be evaluated by students
+
+### Semantic Differential Scale
+
+To evaluated kansei pairing words, we use Semantic Differential (SD) Scale. The SD Scale was introduced by Osgood et al. (1957), he used 7 points SD scales gathering for the evaluation. In this study, the words collected from students were paired with their antonym, then it was structured into 7 points SD scale starts from 1 to 7. This evaluation has been done by scaling the most influenced words from student opinion to the Algoritma teaching format given in class.
+
+<center>
+![](gambar/sdbaru.PNG){ width=40% }
+</center>
+
+### Sample of Algoritma Teaching format
+Besides, here is one of samples of Algoritma teaching format that will be evaluated by students.
+
+**Example of in-class Activity :**   
+
+1. The instructor explains the concept based on real case
+2. The instructor shows an example of real case and trigerred student to think by throwing several open-ended questions so student's imagination is shaped about a certain concept
+3. The instructor links the real case with the mathematical formula that is spelled out on the board
+4. The instructor evaluated the learning by discussing with student to make sure knowledge transferred has been done 
+
+**Design element:**  
+
+- Method: Integratif   
+- Tools: White Board   
+- Evaluation: Open Ended Question   
+
+## Quantification Theory Type 1 (QT1)   
+Quantification theory Type 1 most often has been used **to analyze direct and quantitative relationships between a Kansei word and design elements**   
+
+### Quantification Theory Type 1 Formula
+
+$\hat{y^k_s} = \displaystyle\sum_{i=1}^E\displaystyle\sum_{j=1}^{Ci}\beta_{ij}x_{ijs}+\varepsilon$
+
+where:   
+$\hat{y^k_s}$ = express the predictive value of customer impression for $s^{th}$ product sample $s = \{1,2,..,n\}$ on the corresponding $k^{th}$ design   
+$i$ = denoted the index of design element   
+$j$ = denoted the index of category element   
+$\beta_{ij}$ = indicates the category score of the $j^{th}$ style within the $i^{th}$ design element   
+$x_{ijs}$ = denotes the coefficient of dummy variable which has binary number value $[0,1]$   
+$\varepsilon$ = express the stochastic variable whose expectation value $E(\varepsilon) = 0$   
+
+
+### Purpose of Quantification Theory Type 1   
+
+QT1 is an effective analysis method for building a mathematical model of the relationships between
+a Kansei word y and two or more design elements $x_1, x_2, x_3….$ The results obtained from QT1 can be stored in a Kansei database or transformed into a knowledge base and integrated into a Kansei/affective engineering expert system.
+
+### The weakness of Quantification Theory Type 1 method:   
+1. In a quantification theory type 1, simultaneous equations could not have been solved when the number of variables exceeds the number of samples, since in Kansei Engieering, many cases have a larger number of design variables than its samples   
+2. A problem of interactions between x variables; if there are heavy interactions between x variables (Multicolinearity), its analyzing result is distorted 
+
+## Sample case using Quantification Theory Type 1
+
+We want to design a product of beer cans based on Kansei Engineering using Quatification Theory Type 1 Method. Based on 56 samples collected, there are 3 design elements that should be exist in designing a beer can, they are `Color`, `Illustration`, and `Label shape`. Besides, each of the design element has several category. The list of design elements and its category presented below.
+
+```{r}
+table1 <- data.frame(Can_Color = c("1: White", "2: Silver", "3: Gold", "4: Blue", "5: Black", 
+                                   "6: Red", "7: Green", "8: Cream", "9: Light Blue", "10: Yellow"),
+                     Can_Illustration = c("1: Animal", "2: Bird", "3: Peson", "4: Barley/Hops", 
+                                          "5: Crown/Symbol", "6: Other Object", "7: No Illustration", 
+                                          " ", " ", " "),
+                     Label_Shape = c("1: Oval Shape", "2: Other Trad", "3: None of Above",
+                                     " "," "," "," "," "," "," " ))
+table1
+```
+
+In this documentation, we use bitter that describe someone's kansei/feeling. Hence, we will design a beer can that describe 'bitter' customer's preference. Here are lists of design elements and how bitter the sample.
+```{r}
+beer <- read_csv("beer_cans_data.csv")
+beer[,3:5] <- lapply(beer[,3:5], as.factor)
+```
+
+The documentation of Quantification theory type 1 can be found in qt1script.R or you can visit the original version from prof aoki [http://aoki2.si.gunma-u.ac.jp/R/qt1.html](http://aoki2.si.gunma-u.ac.jp/R/qt1.html). We will call several functions to get the sugestion of beer can's design.
+
+```{r}
+source("Kansei/qt1script.R")
+```
+
+To make QT1 model
+```{r}
+model_qt1 <- qt1(beer[,3:5], y = beer$Bitter )
+```
+
+To check the summary of the model
+```{r}
+summary(model_qt1)
+```
+
+Based on the summary above, PCC shows the most influential mixture composition that affected customer impression and category score indicates the preference degree. 
+
+Besides, we can plot the model to see our new design based on "Bitter" concept
+```{r}
+plot(model_qt1)
+```
+
+Based on the plot above, we can get the conclusion that for the color category, black (Color.5) has the highest positive category score, besides, illustration of a person’s(Illustration.3) face indicates a beer that is the most bitter, and for shape category, Other Trad (Shape.2) is the most contribution to Bitter.
+
+```{r}
+plot(model_qt1, which = "fitness", pch = 19)
+table1
+```
+
+Model linear model
+```{r}
+model_lm <- lm(Bitter ~Color+Illustration+Shape, beer)
+summary(model_lm)
+```
+
+Based on the linear model above, we get multiple R-squared = 0.72 and Adj. R-Squared = 0.60. Besides, R-squared should be more than 0.8 and must be more than **0.6** for a Kansei evaluation data model.
+
+## Learn-by-building
+### Analysis of Beer Can Design Using QT1 based on High_Grade/Ambience concept
+
+Use the beer dataset above, and use High_Grade/Ambience as the target variable
+
+```{r}
+table1
+```
+
+
+```{r}
+beer
+```
+ 
+## Reference
+1. Lokman, Anitawati Mohd, 2010. Design & Emotion : The Kansei Engineering Methodology. Malaysia: Universiti Teknologi MARA.
+2. Nagamachi, Mitsuo, 2011. Kansei/Affective Engineering. New York: Taylor and Francis Group.
+3. Nagamachi, Mitsuo & Lokman, Anitawati Mohd, 2011. Innovations of Kansei Engineering. New York: Taylor and Francis Group.
+
